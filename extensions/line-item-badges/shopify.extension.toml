@@ -1,0 +1,30 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/api/checkout-extensions/checkout/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2024-07"
+
+[[extensions]]
+name = "Line Item Badges"
+handle = "line-item-badges"
+type = "ui_extension"
+
+[[extensions.targeting]]
+module = "./src/LineItemBadge.tsx"
+target = "purchase.checkout.cart-line-item.render-after"
+
+[extensions.capabilities]
+api_access = true
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "preorder_text"
+type = "single_line_text_field"
+name = "Preorder Text"
+description = "The text to display in the line item badge when on preorder"
+[[extensions.settings.fields]]
+key = "lite_packaging_text"
+type = "single_line_text_field"
+name = "Lite Packaging Text"
+description = "The text to display in the line item badge when Lite Packaging is available"

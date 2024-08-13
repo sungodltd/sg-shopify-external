@@ -1,0 +1,55 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/api/checkout-extensions/checkout/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2024-07"
+
+[[extensions]]
+name = "Shipping Timer"
+handle = "shipping-timer"
+type = "ui_extension"
+
+
+# Controls where in Shopify your extension will be injected,
+# and the file that contains your extension’s source code. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/unstable/extension-targets-overview
+
+[[extensions.targeting]]
+module = "./src/ShippingTimer.tsx"
+target = "purchase.checkout.shipping-option-item.render-after"
+
+[[extensions.targeting]]
+module = "./src/ShippingTimer.tsx"
+target = "purchase.checkout.shipping-option-list.render-after"
+
+[extensions.capabilities]
+api_access = true
+network_access = true
+
+# Loads metafields on checkout resources, including the cart,
+# products, customers, and more. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#metafields
+
+# [[extensions.metafields]]
+# namespace = "my_namespace"
+# key = "my_key"
+# [[extensions.metafields]]
+# namespace = "my_namespace"
+# key = "my_other_key"
+
+# Defines settings that will be collected from merchants installing
+# your extension. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#settings-definition
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "preorder_title"
+type = "multi_line_text_field"
+name = "Preorder Title"
+description = "Preorder alert title"
+[[extensions.settings.fields]]
+key = "preorder_body"
+type = "multi_line_text_field"
+name = "Preorder Body"
+description = "Preorder alert body"

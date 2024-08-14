@@ -3,7 +3,7 @@
 client_id = "368fb974941b9e331b6c0899c2d520f1"
 name = "SunGod External"
 handle = "sungod-external"
-application_url = "https://grown-wins-computer-bacon.trycloudflare.com"
+application_url = "https://sg-shopify-external-c66be758fce5.herokuapp.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_customer_events,read_discounts,read_metaobject_def
 
 [auth]
 redirect_urls = [
-  "https://grown-wins-computer-bacon.trycloudflare.com/auth/callback",
-  "https://grown-wins-computer-bacon.trycloudflare.com/auth/shopify/callback",
-  "https://grown-wins-computer-bacon.trycloudflare.com/api/auth/callback"
+  "https://sg-shopify-external-c66be758fce5.herokuapp.com/auth/callback",
+  "https://sg-shopify-external-c66be758fce5.herokuapp.com/auth/shopify/callback",
+  "https://sg-shopify-external-c66be758fce5.herokuapp.com/api/auth/callback"
 ]
 
 [webhooks]

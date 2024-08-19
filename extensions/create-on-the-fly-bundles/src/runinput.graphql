@@ -8,6 +8,10 @@ query RunInput {
         ... on ProductVariant {
           id
           title
+          sku
+          productImages: metafield(namespace: "custom", key: "product_images") {
+            jsonValue
+          }
         }
       }
       bundleId: attribute(key: "_bundleId") {

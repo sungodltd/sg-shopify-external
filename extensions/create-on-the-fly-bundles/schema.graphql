@@ -9,9 +9,24 @@ Requires that exactly one field must be supplied and that field must not be `nul
 directive @oneOf on INPUT_OBJECT
 
 """
-Represents a generic custom attribute.
+Represents a generic custom attribute, such as whether an order is a customer's first.
 """
 type Attribute {
+  """
+  The key or name of the attribute. For example, `"customersFirstOrder"`.
+  """
+  key: String!
+
+  """
+  The value of the attribute. For example, `"true"`.
+  """
+  value: String
+}
+
+"""
+Key-value pairs that contains additional information.
+"""
+input AttributeOutput {
   """
   Key or name of the attribute.
   """
@@ -20,7 +35,7 @@ type Attribute {
   """
   Value of the attribute.
   """
-  value: String
+  value: String!
 }
 
 """
@@ -162,7 +177,14 @@ input CartLineInput {
 An operation to apply to the Cart.
 """
 input CartOperation @oneOf {
+  """
+  A cart line expand operation.
+  """
   expand: ExpandOperation
+
+  """
+  A cart line merge operation.
+  """
   merge: MergeOperation
 
   """
@@ -1448,7 +1470,7 @@ enum CountryCode {
   TO
 
   """
-  Turkey.
+  Türkiye.
   """
   TR
 
@@ -2524,6 +2546,9 @@ Example values: `"29.99"`, `"29.999"`.
 """
 scalar Decimal
 
+"""
+A cart line expand operation.
+"""
 input ExpandOperation {
   """
   The cart line id to expand.
@@ -2552,6 +2577,11 @@ input ExpandOperation {
 }
 
 input ExpandedItem {
+  """
+  The CartLine attributes to be added to component line.
+  """
+  attributes: [AttributeOutput!] = []
+
   """
   The merchandise id of the expanded item.
   """
@@ -2599,8 +2629,7 @@ input ExpandedItemPriceAdjustmentValue @oneOf {
 }
 
 """
-Transformations to apply to the Cart. In API versions 2023-10 and beyond, this
-type is deprecated in favor of `FunctionRunResult`.
+The run target result. In API versions 2023-10 and beyond, this type is deprecated in favor of `FunctionRunResult`.
 """
 input FunctionResult {
   """
@@ -2610,7 +2639,7 @@ input FunctionResult {
 }
 
 """
-Transformations to apply to the Cart.
+The run target result.
 """
 input FunctionRunResult {
   """
@@ -2705,6 +2734,23 @@ type Input {
   """
   shop: Shop!
 }
+
+"""
+A [JSON](https://www.json.org/json-en.html) object.
+
+Example value:
+`{
+  "product": {
+    "id": "gid://shopify/Product/1346443542550",
+    "title": "White T-shirt",
+    "options": [{
+      "name": "Size",
+      "values": ["M", "L"]
+    }]
+  }
+}`
+"""
+scalar JSON
 
 """
 A language.
@@ -3576,7 +3622,15 @@ The merchandise to be purchased at checkout.
 """
 union Merchandise = CustomProduct | ProductVariant
 
+"""
+A cart line merge operation.
+"""
 input MergeOperation {
+  """
+  The CartLine attributes to be added to the parent line.
+  """
+  attributes: [AttributeOutput!] = []
+
   """
   The list of cart lines to merge.
   """
@@ -3613,13 +3667,18 @@ For more information about the Shopify resources that you can attach metafields 
 """
 type Metafield {
   """
+  The data stored in the metafield in JSON format.
+  """
+  jsonValue: JSON!
+
+  """
   The type of data that the metafield stores in the `value` field.
   Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
   """
   type: String!
 
   """
-  The data to store in the metafield. The data is always stored as a string, regardless of the metafield's type.
+  The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
   """
   value: String!
 }
@@ -3846,7 +3905,7 @@ type PurchasingCompany {
 """
 Represents how products and variants can be sold and purchased.
 """
-type SellingPlan {
+type SellingPlan implements HasMetafields {
   """
   The description of the selling plan.
   """
@@ -3856,6 +3915,21 @@ type SellingPlan {
   A globally-unique identifier.
   """
   id: ID!
+
+  """
+  Returns a metafield by namespace and key that belongs to the resource.
+  """
+  metafield(
+    """
+    The key for the metafield.
+    """
+    key: String!
+
+    """
+    The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+    """
+    namespace: String
+  ): Metafield
 
   """
   The name of the selling plan. For example, '6 weeks of prepaid granola, delivered weekly'.
@@ -3947,8 +4021,8 @@ scalar TimeWithoutTimezone
 Represents an [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986) and
 [RFC 3987](https://datatracker.ietf.org/doc/html/rfc3987)-compliant URI string.
 
-For example, `"https://johns-apparel.myshopify.com"` is a valid URL. It includes a scheme (`https`) and a host
-(`johns-apparel.myshopify.com`).
+For example, `"https://example.myshopify.com"` is a valid URL. It includes a scheme (`https`) and a host
+(`example.myshopify.com`).
 """
 scalar URL
 
@@ -3972,7 +4046,7 @@ input UpdateOperation {
   price: UpdateOperationPriceAdjustment
 
   """
-  The title override for the cart line item. If not provided, the variant title is used.
+  The title override for the cart line item.
   """
   title: String
 }

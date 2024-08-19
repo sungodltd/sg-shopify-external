@@ -9,9 +9,55 @@ const NO_CHANGES = {
   operations: [],
 } as FunctionRunResult
 
+function cleanSKU (sku: string): string {
+  // Remove lens techs
+  const pattern = /le_(N|P|8P|8|[A-Z]{0,3}RX)?([a-z]*)(N|8N)?/
+  sku = sku.replace(pattern, 'le_$2')
+
+  // Map all matte parts to infinite (_M to _I)
+  sku = sku.replace(/_M/, '_I')
+
+  return sku
+}
+
+type ProductImage = {
+  url: string
+}
+function getProductImage(lines: typeof RunInput["cart"]["lines"]): ProductImage | null {
+  try {
+    // Get the SKUs of all parts in this bundle
+    let bundlePartSKUs = lines.map(
+      (line) => cleanSKU(line.merchandise.sku)
+    ).filter(Boolean) as string[]
+
+    const image = lines.map((line) => {
+      const images = line.merchandise.productImages?.jsonValue
+      if (!images) return null
+      const partsKey = bundlePartSKUs.filter(
+        sku => images?.validSKUPrefixes.includes(sku.split('_')[0])
+      ).sort((a, b) => a.localeCompare(b)).join(',')
+      console.error(partsKey)
+      if (!partsKey) return null
+      if (partsKey in images.mapping) {
+        return {
+          url: images.baseURL + images.mapping[partsKey]
+        }
+      }
+    }).find(Boolean) as ProductImage
+
+    console.error(image?.url)
+
+    return image
+
+  } catch (error) {
+    console.error("Error getting product image")
+    console.error(error)
+    return null
+  }
+}
+
 export function run(input: RunInput): FunctionRunResult {
   console.error("Running cart...");
-  console.error(JSON.stringify(input));
 
   // Get all line items and group them by their bundleId. Ignore if they don't have a bundleId.
   type GroupedBundles = {
@@ -41,6 +87,8 @@ export function run(input: RunInput): FunctionRunResult {
     )?.parentVariantId?.value;
     if (!parentVariantId) return null
 
+    const image = getProductImage(bundleLines)
+
     return {
       merge: {
         cartLines: bundleLines.map((line) => ({
@@ -48,9 +96,7 @@ export function run(input: RunInput): FunctionRunResult {
           quantity: line.quantity
         })),
         parentVariantId,
-        image: {
-          url: 'https://cdn.shopify.com/s/files/1/0878/4835/4098/files/tempests-tf_Fclear-tgle_Nsilverblue.webp'
-        }
+        image
       }
     }
   }).filter(Boolean) as FunctionRunResult["operations"]

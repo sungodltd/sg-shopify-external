@@ -106,7 +106,7 @@ export function run(input: RunInput): FunctionRunResult {
       merge: {
         cartLines: bundleLines.map((line) => ({
           cartLineId: line.id,
-          quantity: line.quantity
+          quantity: 1
         })),
         parentVariantId,
         image,

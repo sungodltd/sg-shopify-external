@@ -1,7 +1,7 @@
 api_version = "2024-07"
 
 [[extensions]]
-name = "prescription-checkbox"
+name = "Prescription Checkbox"
 handle = "prescription-checkbox"
 type = "ui_extension"
 

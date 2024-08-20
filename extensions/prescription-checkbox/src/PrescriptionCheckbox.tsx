@@ -43,7 +43,7 @@ function App() {
       };
     },
     {
-      isPrescription: true,
+      isPrescription: false,
     }
   );
 
@@ -95,7 +95,7 @@ function App() {
                 onChange={handleCheckboxChange}
                 error={validationError}
               >
-                <Text appearance={!!validationError ? "critical" : "info"}>
+                <Text>
                   {checkboxText}
                 </Text>
               </Checkbox>

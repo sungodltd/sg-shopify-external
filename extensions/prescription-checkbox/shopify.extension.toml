@@ -1,0 +1,32 @@
+api_version = "2024-07"
+
+[[extensions]]
+name = "prescription-checkbox"
+handle = "prescription-checkbox"
+type = "ui_extension"
+
+[[extensions.targeting]]
+module = "./src/PrescriptionCheckbox.tsx"
+target = "purchase.checkout.block.render"
+
+[extensions.capabilities]
+block_progress = true
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "title"
+type = "single_line_text_field"
+name = "Title"
+[[extensions.settings.fields]]
+key = "body"
+type = "multi_line_text_field"
+name = "Body"
+[[extensions.settings.fields]]
+key = "checkbox"
+type = "single_line_text_field"
+name = "Checkbox Text"
+[[extensions.settings.fields]]
+key = "error"
+type = "multi_line_text_field"
+name = "Error Text"
+description = "Error text to display when attempting to advance without checking the box"

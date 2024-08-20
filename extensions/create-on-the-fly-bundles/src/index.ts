@@ -86,6 +86,19 @@ export function run(input: RunInput): FunctionRunResult {
       (line) => line.parentVariantId?.value
     )?.parentVariantId?.value;
     if (!parentVariantId) return null
+    const parentItem = input.cart.lines.find(
+      (line) => line.merchandise.id === parentVariantId
+    )
+
+    const attributes = [] as { key: string, value: string }[]
+    if (parentItem?.checkoutInfo?.value) attributes.push({
+      key: '_checkoutInfo',
+      value: parentItem.checkoutInfo.value
+    })
+    if (parentItem?.despatchDate?.value) attributes.push({
+      key: '_despatchDate',
+      value: parentItem.despatchDate.value
+    })
 
     const image = getProductImage(bundleLines)
 
@@ -96,7 +109,8 @@ export function run(input: RunInput): FunctionRunResult {
           quantity: line.quantity
         })),
         parentVariantId,
-        image
+        image,
+        attributes
       }
     }
   }).filter(Boolean) as FunctionRunResult["operations"]

@@ -20,6 +20,12 @@ query RunInput {
       parentVariantId: attribute(key: "_baseVariantId") {
         value
       }
+      checkoutInfo: attribute(key: "_checkoutInfo") {
+        value
+      }
+      despatchDate: attribute(key: "_despatchDate") {
+        value
+      }
     }
   }
 }

@@ -20,6 +20,9 @@ query RunInput {
       parentVariantId: attribute(key: "_baseVariantId") {
         value
       }
+      bundleSku: attribute(key: "_bundleSku") {
+        value
+      }
       checkoutInfo: attribute(key: "_checkoutInfo") {
         value
       }

@@ -90,14 +90,28 @@ export function run(input: RunInput): FunctionRunResult {
       (line) => line.merchandise.id === parentVariantId
     )
 
-    const attributes = [] as { key: string, value: string }[]
-    if (parentItem?.checkoutInfo?.value) attributes.push({
-      key: '_checkoutInfo',
-      value: parentItem.checkoutInfo.value
-    })
-    if (parentItem?.despatchDate?.value) attributes.push({
-      key: '_despatchDate',
-      value: parentItem.despatchDate.value
+    const attributes = {} as Record<string, { key: string, value: string }>
+    bundleLines.forEach((line) => {
+      if (line?.checkoutInfo?.value) {
+        attributes['_checkoutInfo'] = {
+          key: '_checkoutInfo',
+          value: line.checkoutInfo.value
+        }
+      }
+
+      if (line?.despatchDate?.value) {
+        attributes['_despatchDate'] = {
+          key: '_despatchDate',
+          value: line.despatchDate.value
+        }
+      }
+
+      if (line?.bundleSku?.value) {
+        attributes['_bundleSku'] = {
+          key: '_bundleSku',
+          value: line.bundleSku.value
+        }
+      }
     })
 
     const image = getProductImage(bundleLines)
@@ -110,7 +124,7 @@ export function run(input: RunInput): FunctionRunResult {
         })),
         parentVariantId,
         image,
-        attributes
+        attributes: Object.values(attributes)
       }
     }
   }).filter(Boolean) as FunctionRunResult["operations"]

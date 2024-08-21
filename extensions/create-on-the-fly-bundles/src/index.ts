@@ -66,7 +66,6 @@ export function run(input: RunInput): FunctionRunResult {
   const bundles: GroupedBundles = {}
   input.cart.lines.forEach((line) => {
     if (!line.bundleId?.value) return;
-    if (!line.parentVariantId?.value) return;
     const bundleId = line.bundleId.value as string;
     if (!bundles[bundleId]) {
       bundles[bundleId] = [];
@@ -86,10 +85,8 @@ export function run(input: RunInput): FunctionRunResult {
       (line) => line.parentVariantId?.value
     )?.parentVariantId?.value;
     if (!parentVariantId) return null
-    const parentItem = input.cart.lines.find(
-      (line) => line.merchandise.id === parentVariantId
-    )
 
+    // Create attributes for the bundle
     const attributes = {} as Record<string, { key: string, value: string }>
     bundleLines.forEach((line) => {
       if (line?.checkoutInfo?.value) {

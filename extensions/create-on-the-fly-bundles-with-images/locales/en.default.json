@@ -1,0 +1,4 @@
+{
+  "name": "Create On The Fly Bundles with images",
+  "description": "Create on the fly bundles based on the _bundleId and _bundleVariantId metafields. This runs when there are <= 4 bundles in the cart."
+}

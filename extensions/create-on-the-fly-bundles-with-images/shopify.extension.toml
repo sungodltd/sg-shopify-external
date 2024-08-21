@@ -1,7 +1,7 @@
 api_version = "2024-07"
 
 [[extensions]]
-handle = "create-bundles"
+handle = "create-bundles-with-images"
 name = "t:name"
 description = "t:description"
 type = "function"

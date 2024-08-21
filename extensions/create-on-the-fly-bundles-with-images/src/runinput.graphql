@@ -1,0 +1,34 @@
+query RunInput {
+  cart {
+    lines {
+      id
+      quantity
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          id
+          title
+          sku
+          productImages: metafield(namespace: "custom", key: "product_images") {
+            jsonValue
+          }
+        }
+      }
+      bundleId: attribute(key: "_bundleId") {
+        value
+      }
+      parentVariantId: attribute(key: "_baseVariantId") {
+        value
+      }
+      bundleSku: attribute(key: "_bundleSku") {
+        value
+      }
+      checkoutInfo: attribute(key: "_checkoutInfo") {
+        value
+      }
+      despatchDate: attribute(key: "_despatchDate") {
+        value
+      }
+    }
+  }
+}

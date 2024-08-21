@@ -9,6 +9,53 @@ const NO_CHANGES = {
   operations: [],
 } as FunctionRunResult
 
+function cleanSKU (sku: string): string {
+  // Remove lens techs
+  const pattern = /le_(N|P|8P|8|[A-Z]{0,3}RX)?([a-z]*)(N|8N)?/
+  sku = sku.replace(pattern, 'le_$2')
+
+  // Map all matte parts to infinite (_M to _I)
+  sku = sku.replace(/_M/, '_I')
+
+  return sku
+}
+
+type ProductImage = {
+  url: string
+}
+function getProductImage(lines: typeof RunInput["cart"]["lines"]): ProductImage | null {
+  try {
+    // Get the SKUs of all parts in this bundle
+    let bundlePartSKUs = lines.map(
+      (line) => cleanSKU(line.merchandise.sku)
+    ).filter(Boolean) as string[]
+
+    const image = lines.map((line) => {
+      const images = line.merchandise.productImages?.jsonValue
+      if (!images) return null
+      const partsKey = bundlePartSKUs.filter(
+        sku => images?.validSKUPrefixes.includes(sku.split('_')[0])
+      ).sort((a, b) => a.localeCompare(b)).join(',')
+      console.error(partsKey)
+      if (!partsKey) return null
+      if (partsKey in images.mapping) {
+        return {
+          url: images.baseURL + images.mapping[partsKey]
+        }
+      }
+    }).find(Boolean) as ProductImage
+
+    console.error(image?.url)
+
+    return image
+
+  } catch (error) {
+    console.error("Error getting product image")
+    console.error(error)
+    return null
+  }
+}
+
 export function run(input: RunInput): FunctionRunResult {
   // console.error("Running cart...");
 
@@ -39,9 +86,9 @@ export function run(input: RunInput): FunctionRunResult {
     return acc;
   }, {} as GroupedBundles)
 
-  // Check the total number of bundles in the cart. If it is <= 4 then bail out
-  // as we will rely on create-on-the-fly-bundles to take over with images.
-  if (Object.keys(bundles).length <= 4) {
+  // Check the total number of bundles in the cart. If it is greater than 4 then bail out
+  // as we will rely on create-on-the-fly-bundles to take over without images.
+  if (Object.keys(bundles).length > 4) {
     return NO_CHANGES
   }
 
@@ -63,6 +110,7 @@ export function run(input: RunInput): FunctionRunResult {
           quantity: 1
         })),
         parentVariantId,
+        images: getProductImage(items),
         attributes: Object.entries(attributes).filter(
           ([_, value]) => value
         ).map(([key, value]) => ({ key, value }))

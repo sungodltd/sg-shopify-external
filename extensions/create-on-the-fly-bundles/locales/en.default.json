@@ -1,4 +1,4 @@
 {
-  "name": "create-on-the-fly-bundles",
-  "description": "create-on-the-fly-bundles"
+  "name": "Create On The Fly Bundles without images",
+  "description": "Create on the fly bundles based on the _bundleId and _bundleVariantId metafields. This runs when there are > 4 bundles in the cart."
 }

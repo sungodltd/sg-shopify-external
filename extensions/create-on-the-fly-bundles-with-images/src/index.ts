@@ -110,7 +110,7 @@ export function run(input: RunInput): FunctionRunResult {
           quantity: 1
         })),
         parentVariantId,
-        images: getProductImage(items),
+        image: getProductImage(items),
         attributes: Object.entries(attributes).filter(
           ([_, value]) => value
         ).map(([key, value]) => ({ key, value }))

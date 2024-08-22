@@ -91,8 +91,9 @@ function calculateDeliveryTitle(deliveryDates: { min: dayjs.Dayjs; max: dayjs.Da
 }
 
 function checkDespatching(date: dayjs.Dayjs): dayjs.Dayjs {
-  const formattedDate = date.format("YYYY-MM-DD");
   date = checkIfWeekend(date);
+  
+  const formattedDate = date.format("YYYY-MM-DD");
   if (shippingConfig.shippingNonShipDays.includes(formattedDate) ||
       shippingConfig.shippingNonDespatch.includes(formattedDate)) {
     date = date.add(1, "day");
@@ -101,8 +102,9 @@ function checkDespatching(date: dayjs.Dayjs): dayjs.Dayjs {
 }
 
 function checkDelivering(date: dayjs.Dayjs): dayjs.Dayjs {
-  const formattedDate = date.format("YYYY-MM-DD");
   date = checkIfWeekend(date);
+
+  const formattedDate = date.format("YYYY-MM-DD");
   if (shippingConfig.shippingNonShipDays.includes(formattedDate)) {
     date = date.add(1, "day");
   }

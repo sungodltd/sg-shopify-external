@@ -80,5 +80,3 @@ function hasValidFreeShippingSuffix(coupon) {
     const expectedSuffix = CryptoJS.MD5(withoutSuffix + 'FREE_SHIPPING').toString().slice(0, 3);
     return suffix === expectedSuffix;
 }
-
-console.log(addFreeShippingSuffix('suffixdiscount'))

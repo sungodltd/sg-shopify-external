@@ -41,9 +41,9 @@ export function run(input: RunInput): FunctionRunResult {
 
   // Check the total number of bundles in the cart. If it is <= 4 then bail out
   // as we will rely on create-on-the-fly-bundles to take over with images.
-  if (Object.keys(bundles).length <= 4) {
-    return NO_CHANGES
-  }
+  // if (Object.keys(bundles).length <= 4) {
+  //   return NO_CHANGES
+  // }
 
   // console.error(bundles)
 

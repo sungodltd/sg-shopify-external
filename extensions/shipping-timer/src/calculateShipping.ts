@@ -91,31 +91,26 @@ function calculateDeliveryTitle(deliveryDates: { min: dayjs.Dayjs; max: dayjs.Da
 }
 
 function checkDespatching(date: dayjs.Dayjs): dayjs.Dayjs {
-  date = checkIfWeekend(date);
-  
-  const formattedDate = date.format("YYYY-MM-DD");
-  if (shippingConfig.shippingNonShipDays.includes(formattedDate) ||
-      shippingConfig.shippingNonDespatch.includes(formattedDate)) {
+  while (true) {
+    date = checkIfWeekend(date);
+    const formattedDate = date.format("YYYY-MM-DD");
+    if (!shippingConfig.shippingNonDespatch.includes(formattedDate) &&
+    !shippingConfig.shippingNonShipDays.includes(formattedDate)) {
+      return date;
+    }
     date = date.add(1, "day");
   }
-  return checkIfWeekend(date);
 }
 
 function checkDelivering(date: dayjs.Dayjs): dayjs.Dayjs {
-  date = checkIfWeekend(date);
-
-  const formattedDate = date.format("YYYY-MM-DD");
-  if (shippingConfig.shippingNonShipDays.includes(formattedDate)) {
+  while (true) {
+    date = checkIfWeekend(date);
+    const formattedDate = date.format("YYYY-MM-DD");
+    if (!shippingConfig.shippingNonShipDays.includes(formattedDate)) {
+      return date;
+    }
     date = date.add(1, "day");
   }
-  return checkIfWeekend(date);
-}
-
-function calculatePrefix(context: ShippingContext) {
-  if (context === 'default' || context === 'prescription') {
-    return 'Get them';
-  }
-  return `Estimated delivery`;
 }
 
 // If the date is a weekend then add a day until it's a weekday
@@ -124,4 +119,11 @@ function checkIfWeekend(date: dayjs.Dayjs): dayjs.Dayjs {
     date = date.add(1, "day");
   }
   return date;
+}
+
+function calculatePrefix(context: ShippingContext) {
+  if (context === 'default' || context === 'prescription') {
+    return 'Get them';
+  }
+  return `Estimated delivery`;
 }

@@ -5,6 +5,7 @@ type CartAttribute = {
   key: string
   value: string
 }
+
 function getDeviceIDFromEvent (event) {
   const attributes = (event?.checkout?.attributes || []) as CartAttribute[]
   const deviceIDAttribute = attributes.find(attr => attr.key === '_amplitudeDeviceId')
@@ -13,7 +14,7 @@ function getDeviceIDFromEvent (event) {
 
 function getCheckoutPayload (checkout) {
   const distinctLineItems = checkout.lineItems.filter((lineItem) => {
-    const properties = Object.fromEntries(lineItem.customAttributes.map(attr => [attr.key, attr.value]))
+    const properties = Object.fromEntries(lineItem.properties.map(attr => [attr.key, attr.value]))
 
     // If the line item has no _bundleId and _baseVariantId then it's distinct
     if (!properties._bundleId && !properties._baseVariantId) return true
@@ -60,14 +61,16 @@ function getCheckoutPayload (checkout) {
   }
 }
 
-register(({ analytics, browser, init, settings }) => {
+register(({ analytics, settings }) => {
   amplitude.getInstance().init(settings.amplitudeAPIKey)
 
   analytics.subscribe("all_standard_events", event => {
     // Ensure we have the correct device ID to be consistent with storefront
     const cartAmplitudeDeviceId = getDeviceIDFromEvent(event?.data)
+
     const activeAmplitudeDeviceId = amplitude.getInstance().getDeviceId()
     console.log(cartAmplitudeDeviceId, activeAmplitudeDeviceId)
+
     if (cartAmplitudeDeviceId && (cartAmplitudeDeviceId !== activeAmplitudeDeviceId)) {
       amplitude.getInstance().setDeviceId(cartAmplitudeDeviceId)
     }
